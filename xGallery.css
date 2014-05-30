@@ -1,0 +1,102 @@
+/*#####################################################################################################################
+                                                                                                              
+                    PPPPPPPPPPPPPPPPP                                                                              
+                    P::::::::::::::::P                                                                             
+                    P::::::PPPPPP:::::P                                                                            
+                    PP:::::P     P:::::P                                                                           
+xxxxxxx      xxxxxxx  P::::P     P:::::Paaaaaaaaaaaaa     ggggggggg   ggggg    eeeeeeeeeeee    rrrrr   rrrrrrrrr   
+ x:::::x    x:::::x   P::::P     P:::::Pa::::::::::::a   g:::::::::ggg::::g  ee::::::::::::ee  r::::rrr:::::::::r  
+  x:::::x  x:::::x    P::::PPPPPP:::::P aaaaaaaaa:::::a g:::::::::::::::::g e::::::eeeee:::::eer:::::::::::::::::r 
+   x:::::xx:::::x     P:::::::::::::PP           a::::ag::::::ggggg::::::gge::::::e     e:::::err::::::rrrrr::::::r
+    x::::::::::x      P::::PPPPPPPPP      aaaaaaa:::::ag:::::g     g:::::g e:::::::eeeee::::::e r:::::r     r:::::r
+     x::::::::x       P::::P            aa::::::::::::ag:::::g     g:::::g e:::::::::::::::::e  r:::::r     rrrrrrr
+     x::::::::x       P::::P           a::::aaaa::::::ag:::::g     g:::::g e::::::eeeeeeeeeee   r:::::r            
+    x::::::::::x      P::::P          a::::a    a:::::ag::::::g    g:::::g e:::::::e            r:::::r            
+   x:::::xx:::::x   PP::::::PP        a::::a    a:::::ag:::::::ggggg:::::g e::::::::e           r:::::r            
+  x:::::x  x:::::x  P::::::::P        a:::::aaaa::::::a g::::::::::::::::g  e::::::::eeeeeeee   r:::::r            
+ x:::::x    x:::::x P::::::::P         a::::::::::aa:::a gg::::::::::::::g   ee:::::::::::::e   r:::::r            
+xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     eeeeeeeeeeeeee   rrrrrrr            
+                                                                   g:::::g                                         
+                                                       gggggg      g:::::g                                         
+                                                       g:::::gg   gg:::::g                                         
+                                                        g::::::ggg:::::::g                                         
+                                                         gg:::::::::::::g                                          
+                                                           ggg::::::ggg                                            
+                                                              gggggg
+															  
+© xPager - xSlider - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 28.05.2014
+#####################################################################################################################*/
+
+.xpager-gallery div img{
+    display:none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    cursor:pointer;
+}
+
+.xpager-gallery .surface{
+    position:fixed;
+    top:0px;
+    left:0px;
+    height:100%;
+    width:100%;
+    z-index:99998;
+    background-color:#000;
+    opacity:0.8;
+    display:none;
+}
+
+.xpager-gallery .overflow{
+    position:fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index:99999;
+    overflow:hidden;
+    display:none;
+}
+
+.xpager-gallery .overflow .image-content{
+    position:absolute;
+    display:none;
+}
+.xpager-gallery .overflow .image-content .image{
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+}
+
+.xpager-conainer{
+    margin-bottom:20px;
+    height:200px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
