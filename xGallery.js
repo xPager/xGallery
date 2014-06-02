@@ -147,7 +147,8 @@ xGallery.prototype = {
         });
         
         $(this.imagesThumb).click(function(){
-            self.activImage = $(this).parent(".xpager-conainer").index();
+            self.activImage = $(this).find(".xpager-conainer").eq();
+            console.log(self.activImage);
             self.openGallery();
         });
         
@@ -170,8 +171,8 @@ xGallery.prototype = {
     
     closeGallery:function(){
         var self = this;
-        $(this.obj).find(".overflow").fadeIn(500,function(){
-            $(self.obj).find(".surface").fadeIn(500); 
+        $(this.obj).find(".overflow").fadeOut(300,function(){
+            $(self.obj).find(".surface").fadeOut(300); 
         });  
     },
     
