@@ -73,6 +73,9 @@ xGallery.prototype = {
         this.imagesThumb = $(this.obj).find("img");
         this.imageNum = $(this.imagesThumb).length;
         
+        // Remove
+        $(this.imagesThumb).remove();
+        
         // Set Images (a Tag Href load)
         $(this.imagesThumb).each(function(i,obj) {
             var img = new Image();
@@ -103,6 +106,15 @@ xGallery.prototype = {
     build:function(){
         var self = this;
         
+        // Thumbnails
+        var thumb = "";
+        $(this.imagesThumb).each(function(i,obj) {
+            thumb += "<div class='img-container'>";
+            thumb += "<img class='thumbnail' src='"+obj['src']+"' />";
+            thumb += "</div>";
+        });
+        
+        // Full
         var html = "<div class='inner-content'>";
         $(this.images).each(function(i,obj) {
             if(obj){
@@ -133,8 +145,12 @@ xGallery.prototype = {
         });
 		html += "</div></div>";
         
+        $(this.obj).append("<div class='content'>"+thumb+"</div>");
         $(this.obj).append("<div class='surface'></div>");
         $(this.obj).append("<div class='overflow' style='width:"+(self.width-self.border)+"px;height:"+(self.height-self.border)+"px;'>"+html+"</div>");
+        
+        this.imagesThumb = $(this.obj).find(".thumbnail");
+        
 
         this.startGallery();
     },
@@ -147,8 +163,7 @@ xGallery.prototype = {
         });
         
         $(this.imagesThumb).click(function(){
-            self.activImage = $(this).find(".xpager-conainer").eq();
-            console.log(self.activImage);
+            self.activImage = $(this).parent().index();
             self.openGallery();
         });
         

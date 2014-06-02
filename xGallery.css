@@ -27,7 +27,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
 © xPager - xSlider - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 28.05.2014
 #####################################################################################################################*/
 
-.xpager-gallery div img{
+.xpager-gallery .overflow img{
     display:none;
     position: absolute;
     top: 0;
