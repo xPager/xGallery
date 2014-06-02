@@ -1,0 +1,32 @@
+<!doctype html>
+<html style="margin:0px; padding:0px;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>xPager - Slider</title>
+
+<link href="xSlider.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="xGallery.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#gallery").xGallery({showComments:true,animateType:'karussell'});
+});
+</script>
+</head>
+<body  style="margin:0px; padding:0px;">
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <h1>xGallery - xPager - Manuel Kleinert</h1>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"">
+        <div id="gallery" class="xpager-gallery">
+            <img src="photos/1.JPG" alt="test" data-img="photos/1.JPG" />
+            <img src="photos/2.JPG"  alt="Italien" data-img="photos/2.JPG" //>
+            <img src="photos/3.JPG"  alt="Test 2" data-img="photos/3.JPG" //>
+            <img src="photos/4.JPG"  alt="Test 1" data-img="photos/4.JPG" />
+        </div>
+    </div>
+</div>
+</body>
+</html>
