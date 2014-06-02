@@ -41,6 +41,8 @@ var xGallery = function(options,fx){
 	this.options = $.extend({
         id:false,
         obj:false,
+        animationType:"fade",
+        animationSpeed:500,
         border:200,
         beta:true
     },options);
@@ -53,8 +55,11 @@ var xGallery = function(options,fx){
     this.activImage = 0;
     this.images = new Array();
     this.imagesThumb = new Array();
+    this.imageNum = 0;
     this.width = $(window).width();
     this.height = $(window).height();
+    this.imgContainer = false;
+    this.openStatus = true;
     
     this.init();
 }
@@ -143,14 +148,17 @@ xGallery.prototype = {
                 html += "</div>";
             }
         });
-		html += "</div></div>";
+		html += "</div>";
+        
+        html += "<div class='next_btn'>>></div>";
+        html += "<div class='prev_btn'><<</div>";
         
         $(this.obj).append("<div class='content'>"+thumb+"</div>");
         $(this.obj).append("<div class='surface'></div>");
         $(this.obj).append("<div class='overflow' style='width:"+(self.width-self.border)+"px;height:"+(self.height-self.border)+"px;'>"+html+"</div>");
         
         this.imagesThumb = $(this.obj).find(".thumbnail");
-        
+        this.imgContainer = $(this.obj).find(".image-content");
 
         this.startGallery();
     },
@@ -171,24 +179,74 @@ xGallery.prototype = {
             self.closeGallery(); 
         });
         
+        $(this.obj).find(".next_btn").click(function(){
+            self.nextImage();
+        });
+        
+        $(this.obj).find(".prev_btn").click(function(){
+            self.prevImage();
+        });
+        
         $(this.imagesThumb).fadeIn(500);
     },
     
     openGallery:function(){
         var self = this;
-        $(this.obj).find(".image-content").hide();
-        $(this.obj).find(".image-content").eq(this.activImage).css("display","block");
-        $(this.obj).find(".surface").fadeIn(500,function(){
-            $(self.obj).find(".overflow").fadeIn(500); 
-        });
-       
+        if(this.openStatus){
+            this.openStatus = false;
+            $(this.imgContainer).hide();
+            $(this.imgContainer).eq(this.activImage).addClass("activ").css("display","block");
+            $(this.obj).find(".surface").fadeIn(500,function(){
+                $(self.obj).find(".overflow").fadeIn(500,function(){
+                    self.openStatus = true; 
+                }); 
+            });
+        }
     },
     
     closeGallery:function(){
         var self = this;
-        $(this.obj).find(".overflow").fadeOut(300,function(){
-            $(self.obj).find(".surface").fadeOut(300); 
-        });  
+        if(this.openStatus){
+            this.openStatus = false;
+            $(this.obj).find(".overflow").fadeOut(300,function(){
+                $(self.obj).find(".surface").fadeOut(300,function(){
+                    self.openStatus = true;     
+                }); 
+            });
+        }
+    },
+    
+    animation:function(){
+       switch(this.animationType){
+            case "fade":
+                $(this.imgContainer).fadeOut(this.animationSpeed,function(){
+                    $(this).removeClass("activ");   
+                });
+                $(this.imgContainer).eq(this.activImage).fadeIn(this.animationSpeed,function(){
+                    $(this).addClass("activ");    
+                });
+            break;
+            default:
+               this.message("no Animation Type")
+       }
+    },
+    
+    nextImage:function(){
+        if(this.activImage < this.imageNum-1){
+           this.activImage++;    
+        }else{
+           this.activImage=0;
+        }
+        this.animation();
+    },
+    
+    prevImage:function(){
+        if(this.activImage > 0){
+           this.activImage--;
+        }else{
+           this.activImage=this.imageNum-1;
+        }
+        this.animation(); 
     },
     
     imageLoader:function(img,fx,fxErr){

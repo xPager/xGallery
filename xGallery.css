@@ -66,6 +66,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     position:absolute;
     display:none;
 }
+
 .xpager-gallery .overflow .image-content .image{
     background-size:contain;
     background-repeat:no-repeat;
@@ -77,6 +78,21 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     height:200px;
 }
 
+.xpager-gallery .overflow .next_btn, .xpager-gallery .overflow .prev_btn{
+    background-color:#fff;
+    display:inline-block;
+    position:absolute;
+    top:50%;
+    height:50px;
+    width:50px;
+    text-align:center;
+    line-height:50px;
+    cursor:pointer;
+}
+
+.xpager-gallery .overflow .next_btn{
+    right:0px;
+}
 
 
 
