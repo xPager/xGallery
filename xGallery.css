@@ -24,8 +24,16 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xSlider - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 28.05.2014
+© xPager - xSlider - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.2 - 03.06.2014
 #####################################################################################################################*/
+
+.xpager-gallery .thumbnail{
+    display:none;   
+}
+
+.xpager-gallery img{
+    display:none;
+}
 
 .xpager-gallery .overflow img{
     display:none;
@@ -45,29 +53,28 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     height:100%;
     width:100%;
     z-index:99998;
-    background-color:#000;
-    opacity:0.8;
+    background-color:rgba(0,0,0,0.5);
     display:none;
 }
 
-.xpager-gallery .overflow{
-    position:fixed;
+.xpager-gallery .surface .border{
+    position:absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
-    z-index:99999;
+    z-index:999;
     overflow:hidden;
     display:none;
 }
 
-.xpager-gallery .overflow .image-content{
+.xpager-gallery .surface .border .image-content{
     position:absolute;
     display:none;
 }
 
-.xpager-gallery .overflow .image-content .image{
+.xpager-gallery .surface .border .image-content .image{
     background-size:contain;
     background-repeat:no-repeat;
     background-position:center;
@@ -78,7 +85,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     height:200px;
 }
 
-.xpager-gallery .overflow .next_btn, .xpager-gallery .overflow .prev_btn{
+.xpager-gallery .surface .next_btn, .xpager-gallery .surface .prev_btn{
     background-color:#fff;
     display:inline-block;
     position:absolute;
@@ -90,29 +97,6 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     cursor:pointer;
 }
 
-.xpager-gallery .overflow .next_btn{
+.xpager-gallery .surface .next_btn{
     right:0px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

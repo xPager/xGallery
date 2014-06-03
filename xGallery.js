@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 28.05.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 03.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -43,7 +43,8 @@ var xGallery = function(options,fx){
         obj:false,
         animationType:"fade",
         animationSpeed:500,
-        border:200,
+        border:100,
+        showImages:"all", // all or Num
         beta:true
     },options);
 
@@ -56,6 +57,7 @@ var xGallery = function(options,fx){
     this.images = new Array();
     this.imagesThumb = new Array();
     this.imageNum = 0;
+    this.imagepage = 0;
     this.width = $(window).width();
     this.height = $(window).height();
     this.imgContainer = false;
@@ -77,10 +79,7 @@ xGallery.prototype = {
         
         this.imagesThumb = $(this.obj).find("img");
         this.imageNum = $(this.imagesThumb).length;
-        
-        // Remove
-        $(this.imagesThumb).remove();
-        
+                
         // Set Images (a Tag Href load)
         $(this.imagesThumb).each(function(i,obj) {
             var img = new Image();
@@ -110,15 +109,7 @@ xGallery.prototype = {
     
     build:function(){
         var self = this;
-        
-        // Thumbnails
-        var thumb = "";
-        $(this.imagesThumb).each(function(i,obj) {
-            thumb += "<div class='img-container'>";
-            thumb += "<img class='thumbnail' src='"+obj['src']+"' />";
-            thumb += "</div>";
-        });
-        
+               
         // Full
         var html = "<div class='inner-content'>";
         $(this.images).each(function(i,obj) {
@@ -150,16 +141,18 @@ xGallery.prototype = {
         });
 		html += "</div>";
         
-        html += "<div class='next_btn'>>></div>";
-        html += "<div class='prev_btn'><<</div>";
+        var navigation = ""
+        if(this.showImages != "all"){
+            navigation += "<div class='next_btn'>next</div>";
+            navigation += "<div class='prev_btn'>prev</div>";
+        }
         
-        $(this.obj).append("<div class='content'>"+thumb+"</div>");
-        $(this.obj).append("<div class='surface'></div>");
-        $(this.obj).append("<div class='overflow' style='width:"+(self.width-self.border)+"px;height:"+(self.height-self.border)+"px;'>"+html+"</div>");
+        $(this.obj).append(navigation);
+        $(this.obj).append("<div class='surface'>"+navigation+"<div class='border' style='width:"+(self.width-self.border)+"px;height:"+(self.height-self.border)+"px;'>"+html+"</div></div>");
         
-        this.imagesThumb = $(this.obj).find(".thumbnail");
+        this.imagesThumb = $(this.obj).find("img");
         this.imgContainer = $(this.obj).find(".image-content");
-
+                
         this.startGallery();
     },
     
@@ -175,19 +168,35 @@ xGallery.prototype = {
             self.openGallery();
         });
         
-        $(this.obj).find(".surface").click(function(){
-            self.closeGallery(); 
+        $(this.obj).find(".surface").click(function(e){
+            var c = $(e.target).attr("class");
+            if(c != "prev_btn" && c != "next_btn"){ 
+                self.closeGallery(); 
+            }
         });
         
-        $(this.obj).find(".next_btn").click(function(){
+        $(this.obj).find(".surface .next_btn").click(function(){
             self.nextImage();
         });
         
-        $(this.obj).find(".prev_btn").click(function(){
+        $(this.obj).find(".surface .prev_btn").click(function(){
             self.prevImage();
         });
         
-        $(this.imagesThumb).fadeIn(500);
+        $(this.obj).children(".next_btn").click(function(){
+            console.log("test");
+            self.nextPage();
+        });
+        
+        $(this.obj).children(".prev_btn").click(function(){
+            self.prevPage();
+        });
+        
+        if(this.showImages == "all"){
+            $(this.imagesThumb).fadeIn(500);
+        }else{
+            $(this.imagesThumb).slice(0,this.showImages).fadeIn(500);
+        }
     },
     
     openGallery:function(){
@@ -197,7 +206,7 @@ xGallery.prototype = {
             $(this.imgContainer).hide();
             $(this.imgContainer).eq(this.activImage).addClass("activ").css("display","block");
             $(this.obj).find(".surface").fadeIn(500,function(){
-                $(self.obj).find(".overflow").fadeIn(500,function(){
+                $(self.obj).find(".surface .border").fadeIn(500,function(){
                     self.openStatus = true; 
                 }); 
             });
@@ -208,7 +217,7 @@ xGallery.prototype = {
         var self = this;
         if(this.openStatus){
             this.openStatus = false;
-            $(this.obj).find(".overflow").fadeOut(300,function(){
+            $(this.obj).find(".surface .border").fadeOut(300,function(){
                 $(self.obj).find(".surface").fadeOut(300,function(){
                     self.openStatus = true;     
                 }); 
@@ -249,6 +258,33 @@ xGallery.prototype = {
         this.animation(); 
     },
     
+    gotoImage:function(i){
+        if(i >= 0 && i<this.imageNum){
+           this.activImage=i;
+        }
+        this.animation(); 
+    },
+    
+    nextPage:function(){
+        var self=this;
+        this.imagepage ++;
+        $(this.imagesThumb).fadeOut(500,function(){
+            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).fadeIn(500);   
+        });
+    },
+    
+    prevPage:function(){
+        var self=this;
+        this.imagepage --;
+        $(this.imagesThumb).fadeOut(500,function(){
+           $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).fadeIn(500);   
+        });
+    },
+    
+    gotoPage:function(){
+        
+    },
+    
     imageLoader:function(img,fx,fxErr){
 		if(img.complete||img.readyState===4){
 			img.src+="?d="+new Date().getTime();
@@ -262,10 +298,10 @@ xGallery.prototype = {
     
     setSize:function(){
 		var self = this;
-		var innerContent = $(this.obj).find(".overflow .inner-content");
+		var innerContent = $(this.obj).find(".surface .inner-content");
 		this.width = $(window).width();
         this.height = $(window).height();
-        $(this.obj).find(".overflow .image-content .image, .overflow").css({"width":this.width-this.border,"height":this.height-this.border});
+        $(this.obj).find(".surface .image-content .image,.surface .border").css({"width":this.width-this.border,"height":this.height-this.border});
 	},
     
     // Console
