@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.1 - 03.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.2 Beta - 29.05.2014
 #####################################################################################################################*/
 
 (function($){
@@ -43,7 +43,9 @@ var xGallery = function(options,fx){
         obj:false,
         animationType:"fade",
         animationSpeed:500,
-        border:100,
+        touchControl:true,
+        keyControl:true,
+        border:110,
         showImages:"all", // all or Num
         beta:true
     },options);
@@ -57,12 +59,14 @@ var xGallery = function(options,fx){
     this.images = new Array();
     this.imagesThumb = new Array();
     this.imageNum = 0;
-    this.imagepage = 0;
+    this.imagepage = 1;
     this.width = $(window).width();
     this.height = $(window).height();
     this.imgContainer = false;
+    this.pageStatus = true;
     this.openStatus = true;
-    
+    this.openAnimationStatus = true;
+    this.loader = false;
     this.init();
 }
 
@@ -82,11 +86,12 @@ xGallery.prototype = {
                 
         // Set Images (a Tag Href load)
         $(this.imagesThumb).each(function(i,obj) {
-            var img = new Image();
-            img.src = $(obj).attr("data-img");
-            self.images.push(img);
+            self.images[i] = new Array();
+            self.images[i]["img"] = new Image();
+            self.images[i]["img"].src = $(obj).attr("data-img");
+            self.images[i]["thumb"] = obj;
+            self.images[i]["comment"] = $(obj).attr("data-comment");
         });
-        
         this.loadGallery();
     },
     
@@ -111,36 +116,6 @@ xGallery.prototype = {
         var self = this;
                
         // Full
-        var html = "<div class='inner-content'>";
-        $(this.images).each(function(i,obj) {
-            if(obj){
-                var setClass = "";				
-                if(self.scale){
-                    if(obj["image"].width < obj["image"].height && self.verticalFormat){
-                        setClass += " verticalFormat";
-                    }else{
-                        setClass += " horizontalFormat";
-                    }
-                }else{
-                    setClass += " noScaleFormat";
-                }
-                if(self.detectBrightness){
-                    setClass += " "+obj["brightness"];
-                }
-                if(self.shadowBox){setClass += " shadowBox";}
-                html += "<div class='image-content'><div class='image "+setClass+"' style='";
-                html += "width:"+(self.width-self.border)+"px;";
-                html += "height:"+(self.height-self.border)+"px;";
-                html += "background-image:url("+obj.src+");";
-                html += "'>&nbsp;</div>";
-                if(self.showComments && typeof obj["comment"] != 'undefined' && obj["comment"] != ''){
-                    html += "<div class='comments'><div class='comments-content'>"+obj["comment"]+"</div>";
-                }
-                html += "</div>";
-            }
-        });
-		html += "</div>";
-        
         var navigation = ""
         if(this.showImages != "all"){
             navigation += "<div class='next_btn'>next</div>";
@@ -148,10 +123,13 @@ xGallery.prototype = {
         }
         
         $(this.obj).append(navigation);
-        $(this.obj).append("<div class='surface'>"+navigation+"<div class='border' style='width:"+(self.width-self.border)+"px;height:"+(self.height-self.border)+"px;'>"+html+"</div></div>");
+        $(this.obj).append("<div class='surface'>"+navigation+"</div>");
+        $(this.obj).find(".surface").append("<div class='border'></div>");
+        $(this.obj).find(".surface .border").append("<div class='loader'></div>");
         
         this.imagesThumb = $(this.obj).find("img");
-        this.imgContainer = $(this.obj).find(".image-content");
+        this.imgContainer = $(this.obj).find(".surface .border");
+        this.loader = $(this.obj).find(".surface .border .loader");
                 
         this.startGallery();
     },
@@ -160,17 +138,17 @@ xGallery.prototype = {
         var self = this;
         
         $(window).resize(function(){
-            self.setSize();    
+            self.setSize();
+            self.setImageSize();  
         });
         
         $(this.imagesThumb).click(function(){
-            self.activImage = $(this).parent().index();
-            self.openGallery();
+            self.openGallery($(this).parent().index());
         });
         
         $(this.obj).find(".surface").click(function(e){
             var c = $(e.target).attr("class");
-            if(c != "prev_btn" && c != "next_btn"){ 
+            if(c != "prev_btn" && c != "next_btn" && c != "image"){ 
                 self.closeGallery(); 
             }
         });
@@ -184,7 +162,6 @@ xGallery.prototype = {
         });
         
         $(this.obj).children(".next_btn").click(function(){
-            console.log("test");
             self.nextPage();
         });
         
@@ -192,47 +169,94 @@ xGallery.prototype = {
             self.prevPage();
         });
         
+        if(this.touchControl){
+			this.touchStart = false;
+			this.touchEnd= false;
+			$(this.obj).bind('touchstart',function(e){
+				self.touchStart = false;
+				self.touchEnd = 0;
+			});
+			$(this.obj).bind('touchmove',function(e){
+				if(self.touchStart == false){
+					self.touchStart = e.originalEvent.touches[0].pageX;
+				}
+				self.touchEnd = e.originalEvent.touches[0].pageX;
+			});
+			$(this.obj).bind('touchend',function(e){
+				var res = self.touchEnd-self.touchStart;
+                if(self.openStatus){
+				    if(res < 0 && res < -50){self.nextImage();}
+				    if(res > 0 && res > 50){self.prevImage();}
+                }else{
+                    if(res < 0 && res < -50){self.nextPage();}
+				    if(res > 0 && res > 50){self.prevPage();}
+                }
+				self.touchStart = false;
+				self.touchEnd = 0;
+			});
+		}
+        
+		if(this.keyControl){
+			$(document).keydown(function(e){
+                if(self.openStatus){
+				    if (e.keyCode == 37){e.preventDefault(); self.prevImage();}
+				    if (e.keyCode == 39){e.preventDefault(); self.nextImage();}
+                }else{
+                    if (e.keyCode == 37){e.preventDefault(); self.prevPage();}
+				    if (e.keyCode == 39){e.preventDefault(); self.nextPage();}
+                }
+			});	
+		}
+        
         if(this.showImages == "all"){
             $(this.imagesThumb).fadeIn(500);
         }else{
-            $(this.imagesThumb).slice(0,this.showImages).fadeIn(500);
+            $(this.imagesThumb).hide();
+            $(this.imagesThumb).slice(0,this.showImages).show();
         }
     },
     
-    openGallery:function(){
+    openGallery:function(i){
         var self = this;
-        if(this.openStatus){
-            this.openStatus = false;
+        if(i>0 && i<this.imageNum-1){
+            this.activImage = i;
+        }
+        if(this.openAnimationStatus){
+            this.openAnimationStatus = false;
+            this.setSize();
             $(this.imgContainer).hide();
-            $(this.imgContainer).eq(this.activImage).addClass("activ").css("display","block");
             $(this.obj).find(".surface").fadeIn(500,function(){
-                $(self.obj).find(".surface .border").fadeIn(500,function(){
-                    self.openStatus = true; 
-                }); 
+                self.addImage(function(){
+                    $(self.obj).find(".surface .border").fadeIn(500,function(){
+                        self.openStatus = true;
+                        self.openAnimationStatus = true; 
+                    }); 
+                 });
             });
         }
     },
     
     closeGallery:function(){
         var self = this;
-        if(this.openStatus){
+        if(this.openAnimationStatus){
             this.openStatus = false;
+            this.openAnimationStatus = false;
             $(this.obj).find(".surface .border").fadeOut(300,function(){
                 $(self.obj).find(".surface").fadeOut(300,function(){
-                    self.openStatus = true;     
+                    self.openAnimationStatus = true;  
                 }); 
             });
         }
     },
     
     animation:function(){
+       var self = this;
        switch(this.animationType){
             case "fade":
                 $(this.imgContainer).fadeOut(this.animationSpeed,function(){
-                    $(this).removeClass("activ");   
-                });
-                $(this.imgContainer).eq(this.activImage).fadeIn(this.animationSpeed,function(){
-                    $(this).addClass("activ");    
+                    self.addImage(function(){
+                        $(self.imgContainer).fadeIn(self.animationSpeed);    
+                    });
                 });
             break;
             default:
@@ -265,20 +289,48 @@ xGallery.prototype = {
         this.animation(); 
     },
     
-    nextPage:function(){
-        var self=this;
-        this.imagepage ++;
-        $(this.imagesThumb).fadeOut(500,function(){
-            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).fadeIn(500);   
+    addImage:function(fx){
+        var self = this;
+        $(this.loader).fadeIn(200);
+        this.imageLoader(this.images[this.activImage]["img"],function(){
+            $(self.loader).fadeOut(200);
+            $(self.obj).find(".surface .border img").remove();
+            $(self.obj).find(".surface .border").append("<img class='image' src='"+self.images[self.activImage]["img"].src+"' alt='' />");
+            self.setImageSize();
+            if(fx){fx();}
+        },function(){
+            console.log("img not load");
         });
     },
     
+    nextPage:function(){
+        if(this.pageStatus){
+            this.pageStatus= false;
+            var self=this;
+            if(this.showImages*self.imagepage < this.imageNum){
+                this.imagepage ++;
+            }else{
+                this.imagepage = 1;  
+            }
+            $(this.imagesThumb).hide();
+            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
+            self.pageStatus=true;
+        }
+    },
+    
     prevPage:function(){
-        var self=this;
-        this.imagepage --;
-        $(this.imagesThumb).fadeOut(500,function(){
-           $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).fadeIn(500);   
-        });
+        if(this.pageStatus){
+            this.pageStatus= false;
+            var self=this;
+            if(this.imagepage > 1){
+                this.imagepage --;
+            }else{
+                this.imagepage = Math.ceil(this.imageNum / this.showImages);  
+            }
+            $(this.imagesThumb).hide();
+            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
+            self.pageStatus=true;
+        }
     },
     
     gotoPage:function(){
@@ -301,8 +353,19 @@ xGallery.prototype = {
 		var innerContent = $(this.obj).find(".surface .inner-content");
 		this.width = $(window).width();
         this.height = $(window).height();
-        $(this.obj).find(".surface .image-content .image,.surface .border").css({"width":this.width-this.border,"height":this.height-this.border});
+        $(this.obj).find(".surface .border").css({"width":this.width-this.border,"height":this.height-this.border});
 	},
+    
+    setImageSize:function(){
+        var img = $(".surface .border img");
+        $(img).height("");
+        console.log(this.width);
+        $(img).width(this.width-this.border);
+        if((this.height-this.border) < $(img).height()){
+            $(img).width("");
+            $(img).height(this.height-this.border);
+        }
+    },
     
     // Console
 	message:function(txt){
