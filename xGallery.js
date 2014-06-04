@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.2 Beta - 29.05.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.6 - 04.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -45,6 +45,8 @@ var xGallery = function(options,fx){
         animationSpeed:500,
         touchControl:true,
         keyControl:true,
+        showPageNum:true, // Page Nummbers
+        showPagePoints:true, // Show Points Nav
         border:110,
         showImages:"all", // all or Num
         beta:true
@@ -60,12 +62,14 @@ var xGallery = function(options,fx){
     this.imagesThumb = new Array();
     this.imageNum = 0;
     this.imagepage = 1;
+    this.imagePageCount = 0;
     this.width = $(window).width();
     this.height = $(window).height();
     this.imgContainer = false;
     this.pageStatus = true;
-    this.openStatus = true;
+    this.openStatus = false;
     this.openAnimationStatus = true;
+    this.animationStatus = true;
     this.loader = false;
     this.init();
 }
@@ -83,6 +87,7 @@ xGallery.prototype = {
         
         this.imagesThumb = $(this.obj).find("img");
         this.imageNum = $(this.imagesThumb).length;
+        this.imagePageCount = Math.ceil(this.imageNum/this.showImages);
                 
         // Set Images (a Tag Href load)
         $(this.imagesThumb).each(function(i,obj) {
@@ -116,18 +121,41 @@ xGallery.prototype = {
         var self = this;
                
         // Full
-        var navigation = "<div class='next_btn'>next</div>";
-        navigation += "<div class='prev_btn'>prev</div>";
+        var navigation = "<div class='prev_btn'></div>";
+        navigation += "<div class='next_btn'></div>";
         if(this.showImages != "all"){
-            $(this.obj).append(navigation);
+            $(this.obj).append("<div class='page-navigation'>"+navigation+"</div>");  
+            
+            var pageNum = "";
+            if(this.showPageNum){
+                pageNum += "<div class='page-num'>";
+                pageNum += "<span class='num'>"+this.imagepage+"</span>";
+                pageNum += "<span class='center'>/</span>";
+                pageNum += "<span class='pages'>"+this.imagePageCount+"</span>";
+                pageNum += "</div>";
+                $(this.obj).append(pageNum);
+            }
+            
+            var pagePoint = "";
+            if(this.showPagePoints){
+                pagePoint += "<div class='page-points'><div class='points-content'>";
+                    for(i = 1;i<=this.imagePageCount; i++){
+                        pagePoint += "<div class='point'><span>"+(i)+"</span></div>";
+                    };
+                pagePoint += "</div></div>";
+                $(this.obj).append(pagePoint);	
+            }
         }
+        
+        navigation += "<div class='close_btn'></div>";
+        
         $(this.obj).append("<div class='surface'>"+navigation+"</div>");
         $(this.obj).find(".surface").append("<div class='border'></div>");
-        $(this.obj).find(".surface .border").append("<div class='loader'></div>");
+        $(this.obj).find(".surface").append("<div class='loader'></div>");
         
         this.imagesThumb = $(this.obj).find("img");
         this.imgContainer = $(this.obj).find(".surface .border");
-        this.loader = $(this.obj).find(".surface .border .loader");
+        this.loader = $(this.obj).find(".surface .loader");
                 
         this.startGallery();
     },
@@ -151,21 +179,26 @@ xGallery.prototype = {
             }
         });
         
-        $(this.obj).find(".surface .next_btn").click(function(){
-            self.nextImage();
+        $(this.obj).find(".next_btn").click(function(){
+            if(self.openStatus){
+                self.nextImage();
+            }else{
+                self.nextPage();
+            }
         });
         
-        $(this.obj).find(".surface .prev_btn").click(function(){
-            self.prevImage();
+        $(this.obj).find(".prev_btn").click(function(){
+            if(self.openStatus){
+                self.prevImage();
+            }else{
+                self.prevPage();
+            }
         });
         
-        $(this.obj).children(".next_btn").click(function(){
-            self.nextPage();
+        $(this.obj).find(".page-points .point").click(function(i){
+            self.gotoPage($(this).index()+1);
         });
         
-        $(this.obj).children(".prev_btn").click(function(){
-            self.prevPage();
-        });
         
         if(this.touchControl){
 			this.touchStart = false;
@@ -216,16 +249,16 @@ xGallery.prototype = {
     
     openGallery:function(i){
         var self = this;
-        if(i>0 && i<this.imageNum-1){
+        if(i>=0 && i<this.imageNum){
             this.activImage = i;
         }
         if(this.openAnimationStatus){
             this.openAnimationStatus = false;
             this.setSize();
-            $(this.imgContainer).hide();
+            $(this.imgContainer).css("opacity",0);
             $(this.obj).find(".surface").fadeIn(500,function(){
                 self.addImage(function(){
-                    $(self.obj).find(".surface .border").fadeIn(500,function(){
+                    $(self.imgContainer).animate({opacity:1},500,function(){
                         self.openStatus = true;
                         self.openAnimationStatus = true; 
                     }); 
@@ -239,52 +272,71 @@ xGallery.prototype = {
         if(this.openAnimationStatus){
             this.openStatus = false;
             this.openAnimationStatus = false;
-            $(this.obj).find(".surface .border").fadeOut(300,function(){
-                $(self.obj).find(".surface").fadeOut(300,function(){
+            $(self.imgContainer).animate({opacity:1},200,function(){
+                $(self.obj).find(".surface").fadeOut(500,function(){
                     self.openAnimationStatus = true;  
                 }); 
             });
         }
     },
     
-    animation:function(){
+    animation:function(fx){
        var self = this;
        switch(this.animationType){
             case "fade":
-                $(this.imgContainer).fadeOut(this.animationSpeed,function(){
+                $(this.imgContainer).animate({opacity:0},self.animationSpeed,function(){
                     self.addImage(function(){
-                        $(self.imgContainer).fadeIn(self.animationSpeed);    
+                        $(self.imgContainer).animate({opacity:1},self.animationSpeed,function(){
+                            if(fx){fx()};   
+                        });  
                     });
                 });
             break;
             default:
-               this.message("no Animation Type")
+               this.message("no Animation Type");
        }
     },
     
     nextImage:function(){
-        if(this.activImage < this.imageNum-1){
-           this.activImage++;    
-        }else{
-           this.activImage=0;
+        var self = this;
+        if(this.animationStatus){
+            this.animationStatus = false;
+            if(this.activImage < this.imageNum-1){
+               this.activImage++;    
+            }else{
+               this.activImage=0;
+            }
+            this.animation(function(){
+                self.animationStatus = true;   
+            });
         }
-        this.animation();
     },
     
     prevImage:function(){
-        if(this.activImage > 0){
-           this.activImage--;
-        }else{
-           this.activImage=this.imageNum-1;
+        var self = this;
+        if(this.animationStatus){
+            this.animationStatus = false;
+            if(this.activImage > 0){
+               this.activImage--;
+            }else{
+               this.activImage=this.imageNum-1;
+            }
+            this.animation(function(){
+                self.animationStatus = true;   
+            });
         }
-        this.animation(); 
     },
     
     gotoImage:function(i){
-        if(i >= 0 && i<this.imageNum){
-           this.activImage=i;
+        var self = this;
+        if(this.animationStatus){
+            if(i >= 0 && i<this.imageNum){
+               this.activImage=i;
+            }
+            this.animation(function(){
+                self.animationStatus = true;   
+            });
         }
-        this.animation(); 
     },
     
     addImage:function(fx){
@@ -310,6 +362,7 @@ xGallery.prototype = {
             }else{
                 this.imagepage = 1;  
             }
+            $(".page-num .num").html(this.imagepage);
             $(this.imagesThumb).hide();
             $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
             self.pageStatus=true;
@@ -325,14 +378,21 @@ xGallery.prototype = {
             }else{
                 this.imagepage = Math.ceil(this.imageNum / this.showImages);  
             }
+            $(".page-num .num").html(this.imagepage);
             $(this.imagesThumb).hide();
             $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
             self.pageStatus=true;
         }
     },
     
-    gotoPage:function(){
-        
+    gotoPage:function(i){
+        var self=this;
+            if(i > 0 && i<this.imageNum){
+            this.imagepage = i;
+            $(".page-num .num").html(this.imagepage);
+            $(this.imagesThumb).hide();
+            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
+        }
     },
     
     imageLoader:function(img,fx,fxErr){

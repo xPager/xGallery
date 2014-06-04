@@ -24,18 +24,59 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 0.0.2 Beta - 29.05.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.6 - 4.06.2014
 #####################################################################################################################*/
 
-.xpager-gallery .overflow img{
-    display:none;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    cursor:pointer;
+.xpager-gallery .page-navigation{
+    display:inline-block;   
+}
+
+.xpager-gallery .page-navigation div{
+    display:inline-block;
+    margin:5px;
+    height:35px;
+    width:35px;
+    border:solid 1px #ccc;
+    text-align:center;
+    line-height:32px;
+}
+
+.xpager-gallery .next_btn:before{
+    content:">>";
+}
+
+.xpager-gallery .prev_btn:before{
+    content:"<<";
+} 
+
+.xpager-gallery .page-num{
+    display:inline-block;
+    margin:5px;
+    height:35px;
+    width:35px;
+    text-align:center;
+    line-height:32px;
+}
+
+.xpager-gallery .page-points{
+    display:inline-block;
+    height:35px;
+}
+
+.xpager-gallery .page-points .points-content .point{
+    display:inline-block;
+    height:20px;
+    width:20px;
+    text-align:center;
+    line-height:16px;
+    border:solid 2px #ccc;
+    border-radius:10px;
+    font-size:12px;
+    margin-left:10px;
+}
+
+.xpager-gallery .page-points .points-content .point span{
+    margin-right:1px;
 }
 
 .xpager-gallery .surface{
@@ -45,8 +86,9 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     height:100%;
     width:100%;
     z-index:99998;
-    background-color:rgba(0,0,0,0.5);
+    background-color:rgba(0,0,0,0.8);
     display:none;
+    cursor:pointer;
 }
 
 .xpager-gallery .surface .border{
@@ -58,10 +100,10 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     margin: auto;
     z-index:999;
     overflow:hidden;
-    display:none;
+    opacity:0;
 }
 
-.xpager-gallery .surface .border .loader{
+.xpager-gallery .surface .loader{
     display:block;
     position:absolute;
     top: 0;
@@ -75,13 +117,14 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     background-size:cover;
 }
 
-.surface .border img{
+.xpager-gallery .surface .border img{
     position:absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
+    cursor:default;
 }
 
 .xpager-gallery .surface .next_btn, .xpager-gallery .surface .prev_btn{
@@ -99,4 +142,22 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
 
 .xpager-gallery .surface .next_btn{
     right:0px;
+}
+
+.xpager-gallery .surface .close_btn{
+    color:#fff;
+    display:inline-block;
+    position:absolute;
+    top:0px;
+    right:0px;
+    height:50px;
+    width:50px;
+    text-align:center;
+    line-height:50px;
+    cursor:pointer;
+    font-size:30px;
+}
+
+.xpager-gallery .surface .close_btn:before{
+    content:"x";
 }
