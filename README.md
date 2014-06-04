@@ -1,6 +1,6 @@
 xGallery
 =======
-<br>
+
 Responsive Image Gallery with many settings. [xPager]
 
 HTML
@@ -21,5 +21,4 @@ Script
 ``` js
 $("#gallery").xGallery();
 ```
-
 [xPager]:http://xpager.ch
