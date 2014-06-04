@@ -1,8 +1,7 @@
 xGallery
 =======
 <br>
-Responsive Image Gallery with many settings.<br>
-[xPager]
+Responsive Image Gallery with many settings. [xPager]
 
 HTML
 ----
