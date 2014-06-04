@@ -24,11 +24,15 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.6 - 4.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.7 - 4.06.2014
 #####################################################################################################################*/
 
+.xpager-gallery{
+    position:relative;   
+}
+
 .xpager-gallery .page-navigation{
-    display:inline-block;   
+    display:inline-block;
 }
 
 .xpager-gallery .page-navigation div{
@@ -72,7 +76,11 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     border:solid 2px #ccc;
     border-radius:10px;
     font-size:12px;
-    margin-left:10px;
+    margin:5px;
+}
+
+.xpager-gallery .page-points .points-content .point.activ{
+    border-color:#666;
 }
 
 .xpager-gallery .page-points .points-content .point span{
@@ -117,6 +125,10 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     background-size:cover;
 }
 
+.xpager-gallery .surface .border{
+    z-index: 1;
+}
+
 .xpager-gallery .surface .border img{
     position:absolute;
     top: 0;
@@ -138,6 +150,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     text-align:center;
     line-height:50px;
     cursor:pointer;
+    z-index:10;
 }
 
 .xpager-gallery .surface .next_btn{

@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.6 - 04.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.7 - 04.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -42,7 +42,7 @@ var xGallery = function(options,fx){
         id:false,
         obj:false,
         animationType:"fade",
-        animationSpeed:500,
+        animationSpeed:300,
         touchControl:true,
         keyControl:true,
         showPageNum:true, // Page Nummbers
@@ -70,6 +70,7 @@ var xGallery = function(options,fx){
     this.openStatus = false;
     this.openAnimationStatus = true;
     this.animationStatus = true;
+    this.points = false;
     this.loader = false;
     this.init();
 }
@@ -93,7 +94,9 @@ xGallery.prototype = {
         $(this.imagesThumb).each(function(i,obj) {
             self.images[i] = new Array();
             self.images[i]["img"] = new Image();
-            self.images[i]["img"].src = $(obj).attr("data-img");
+            self.images[i]["height"] = new Image();
+            self.images[i]["width"] = new Image();
+            self.images[i]["src"] = $(obj).attr("data-img");
             self.images[i]["thumb"] = obj;
             self.images[i]["comment"] = $(obj).attr("data-comment");
         });
@@ -156,7 +159,10 @@ xGallery.prototype = {
         this.imagesThumb = $(this.obj).find("img");
         this.imgContainer = $(this.obj).find(".surface .border");
         this.loader = $(this.obj).find(".surface .loader");
-                
+        this.points = $(this.obj).find(".page-points .point");
+        
+        $(this.obj).find(".page-points .point").eq(this.imagepage-1).addClass("activ");  
+        
         this.startGallery();
     },
     
@@ -196,9 +202,9 @@ xGallery.prototype = {
         });
         
         $(this.obj).find(".page-points .point").click(function(i){
+            var p = this;
             self.gotoPage($(this).index()+1);
         });
-        
         
         if(this.touchControl){
 			this.touchStart = false;
@@ -327,14 +333,15 @@ xGallery.prototype = {
         }
     },
     
-    gotoImage:function(i){
+    gotoImage:function(i,fx){
         var self = this;
         if(this.animationStatus){
             if(i >= 0 && i<this.imageNum){
                this.activImage=i;
             }
             this.animation(function(){
-                self.animationStatus = true;   
+                self.animationStatus = true;
+                if(fx){fx();}  
             });
         }
     },
@@ -351,47 +358,48 @@ xGallery.prototype = {
         },function(){
             console.log("img not load");
         });
+        this.images[this.activImage]["img"].src = this.images[this.activImage]["src"];
     },
     
     nextPage:function(){
+        var self=this;
         if(this.pageStatus){
             this.pageStatus= false;
-            var self=this;
             if(this.showImages*self.imagepage < this.imageNum){
                 this.imagepage ++;
             }else{
                 this.imagepage = 1;  
             }
-            $(".page-num .num").html(this.imagepage);
-            $(this.imagesThumb).hide();
-            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
-            self.pageStatus=true;
+            this.gotoPage(this.imagepage,function(){
+                self.pageStatus=true;    
+            })
         }
     },
     
     prevPage:function(){
+        var self=this;
         if(this.pageStatus){
             this.pageStatus= false;
-            var self=this;
             if(this.imagepage > 1){
                 this.imagepage --;
             }else{
                 this.imagepage = Math.ceil(this.imageNum / this.showImages);  
             }
-            $(".page-num .num").html(this.imagepage);
-            $(this.imagesThumb).hide();
-            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
-            self.pageStatus=true;
+            this.gotoPage(this.imagepage,function(){
+                self.pageStatus=true;    
+            })
         }
     },
     
-    gotoPage:function(i){
+    gotoPage:function(i,fx){
         var self=this;
             if(i > 0 && i<this.imageNum){
             this.imagepage = i;
             $(".page-num .num").html(this.imagepage);
             $(this.imagesThumb).hide();
             $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
+            $(self.points).removeClass("activ").eq(this.imagepage-1).addClass("activ"); 
+            if(fx){fx();}
         }
     },
     
