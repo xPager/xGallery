@@ -17,7 +17,6 @@ HTML
 </div>
 ```
 
-
 Script
 ----
 
