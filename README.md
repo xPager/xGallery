@@ -3,7 +3,6 @@ xGallery
 <br>
 Responsive Image Gallery with many settings.<br>
 [xPager]
-<br><br>
 
 HTML
 ----
