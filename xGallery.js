@@ -116,13 +116,11 @@ xGallery.prototype = {
         var self = this;
                
         // Full
-        var navigation = ""
+        var navigation = "<div class='next_btn'>next</div>";
+        navigation += "<div class='prev_btn'>prev</div>";
         if(this.showImages != "all"){
-            navigation += "<div class='next_btn'>next</div>";
-            navigation += "<div class='prev_btn'>prev</div>";
+            $(this.obj).append(navigation);
         }
-        
-        $(this.obj).append(navigation);
         $(this.obj).append("<div class='surface'>"+navigation+"</div>");
         $(this.obj).find(".surface").append("<div class='border'></div>");
         $(this.obj).find(".surface .border").append("<div class='loader'></div>");
@@ -359,7 +357,6 @@ xGallery.prototype = {
     setImageSize:function(){
         var img = $(".surface .border img");
         $(img).height("");
-        console.log(this.width);
         $(img).width(this.width-this.border);
         if((this.height-this.border) < $(img).height()){
             $(img).width("");
