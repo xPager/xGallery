@@ -1,4 +1,4 @@
-xSlider
+xGallery
 =======
 <br>
 Responsive Image Gallery with many settings.<br>
