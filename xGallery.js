@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.7 - 04.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.8 - 06.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -58,8 +58,8 @@ var xGallery = function(options,fx){
     // Attreibute
     this.count = 0;
     this.activImage = 0;
-    this.images = new Array();
-    this.imagesThumb = new Array();
+    this.imagesThumb = false;
+    this.imgArray = new Array();
     this.imageNum = 0;
     this.imagepage = 1;
     this.imagePageCount = 0;
@@ -78,7 +78,7 @@ var xGallery = function(options,fx){
 xGallery.prototype = {
     init:function(){
         var self = this;
-       
+        
         // Set Obj
         if(this.options.obj){
             this.obj =  this.options.obj;	
@@ -92,14 +92,15 @@ xGallery.prototype = {
                 
         // Set Images (a Tag Href load)
         $(this.imagesThumb).each(function(i,obj) {
-            self.images[i] = new Array();
-            self.images[i]["img"] = new Image();
-            self.images[i]["height"] = new Image();
-            self.images[i]["width"] = new Image();
-            self.images[i]["src"] = $(obj).attr("data-img");
-            self.images[i]["thumb"] = obj;
-            self.images[i]["comment"] = $(obj).attr("data-comment");
+            self.imgArray[i] = new Array();
+            self.imgArray[i]["img"] = new Image();
+            self.imgArray[i]["height"] = 0;
+            self.imgArray[i]["width"] = 0;
+            self.imgArray[i]["src"] = $(obj).attr("data-img");
+            self.imgArray[i]["thumb"] = obj;
+            self.imgArray[i]["comment"] = $(obj).attr("data-comment");
         });
+
         this.loadGallery();
     },
     
@@ -113,8 +114,7 @@ xGallery.prototype = {
 			},function(){
 				self.message("Error load image "+(i+1));
 				$(obj).remove();
-				self.imagesThumb--;
-                self.images--;
+                self.imageNum--;
 				if(num==self.imageNum){self.build();}
 			});
         });
@@ -349,16 +349,16 @@ xGallery.prototype = {
     addImage:function(fx){
         var self = this;
         $(this.loader).fadeIn(200);
-        this.imageLoader(this.images[this.activImage]["img"],function(){
+        this.imgArray[this.activImage]["img"].src = this.imgArray[this.activImage]["src"];
+        this.imageLoader(this.imgArray[this.activImage]["img"],function(){
             $(self.loader).fadeOut(200);
             $(self.obj).find(".surface .border img").remove();
-            $(self.obj).find(".surface .border").append("<img class='image' src='"+self.images[self.activImage]["img"].src+"' alt='' />");
+            $(self.obj).find(".surface .border").append("<img class='image' src='"+self.imgArray[self.activImage]["img"].src+"' alt='' />");
             self.setImageSize();
             if(fx){fx();}
         },function(){
-            console.log("img not load");
+            //console.log("img not load");
         });
-        this.images[this.activImage]["img"].src = this.images[this.activImage]["src"];
     },
     
     nextPage:function(){
