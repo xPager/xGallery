@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.8 - 06.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.9 - 10.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -47,8 +47,9 @@ var xGallery = function(options,fx){
         keyControl:true,
         showPageNum:true, // Page Nummbers
         showPagePoints:true, // Show Points Nav
+		showImages:"all", // all or Num
+		showComments:false,
         border:110,
-        showImages:"all", // all or Num
         beta:true
     },options);
 
@@ -98,9 +99,8 @@ xGallery.prototype = {
             self.imgArray[i]["width"] = 0;
             self.imgArray[i]["src"] = $(obj).attr("data-img");
             self.imgArray[i]["thumb"] = obj;
-            self.imgArray[i]["comment"] = $(obj).attr("data-comment");
+			self.imgArray[i]["comment"] = $(obj).attr("data-comment")!=undefined?$(obj).attr("data-comment"):"";
         });
-
         this.loadGallery();
     },
     
@@ -173,7 +173,11 @@ xGallery.prototype = {
             self.setSize();
             self.setImageSize();  
         });
-        
+		setInterval(function(){
+			self.setSize();
+			self.setImageSize();
+		},100);
+	
         $(this.imagesThumb).click(function(){
             self.openGallery($(this).parent().index());
         });
@@ -264,6 +268,7 @@ xGallery.prototype = {
             $(this.imgContainer).css("opacity",0);
             $(this.obj).find(".surface").fadeIn(500,function(){
                 self.addImage(function(){
+					self.addComment();
                     $(self.imgContainer).animate({opacity:1},500,function(){
                         self.openStatus = true;
                         self.openAnimationStatus = true; 
@@ -292,6 +297,7 @@ xGallery.prototype = {
             case "fade":
                 $(this.imgContainer).animate({opacity:0},self.animationSpeed,function(){
                     self.addImage(function(){
+						self.addComment();
                         $(self.imgContainer).animate({opacity:1},self.animationSpeed,function(){
                             if(fx){fx()};   
                         });  
@@ -360,6 +366,14 @@ xGallery.prototype = {
             //console.log("img not load");
         });
     },
+	
+	addComment:function(){
+		var self = this;
+		if(this.showComments){
+			$(self.obj).find(".surface .border div.comment").remove();
+			$(self.obj).find(".surface .border").append("<div class='comment'>"+self.imgArray[self.activImage]["comment"]+"</div>");
+		}	
+	},
     
     nextPage:function(){
         var self=this;
