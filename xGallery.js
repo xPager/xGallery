@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.10 - 10.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.0 - 25.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -45,10 +45,12 @@ var xGallery = function(options,fx){
         animationSpeed:300,
         touchControl:true,
         keyControl:true,
-        showPageNum:true, // Page Nummbers
-        showPagePoints:true, // Show Points Nav
-		showImages:"all", // all or Num
-		showComments:false,
+        showPageNum:true,           // Page Nummbers
+        showPagePoints:true,        // Show Points Nav
+		showPageImages:"all",       // all or Num images of Page
+        showImages:"all",           // all or Num images show
+		showComments:false,         // Show Imagecomments
+        showImageNum:true,         // Show Imagenummber
         border:110,
         beta:true
     },options);
@@ -89,7 +91,7 @@ xGallery.prototype = {
         
         this.imagesThumb = $(this.obj).find("img");
         this.imageNum = $(this.imagesThumb).length;
-        this.imagePageCount = Math.ceil(this.imageNum/this.showImages);
+        this.imagePageCount = Math.ceil(this.imageNum/this.showPageImages);
                 
         // Set Images (a Tag Href load)
         $(this.imagesThumb).each(function(i,obj) {
@@ -100,6 +102,11 @@ xGallery.prototype = {
             self.imgArray[i]["src"] = $(obj).attr("data-img");
             self.imgArray[i]["thumb"] = obj;
 			self.imgArray[i]["comment"] = $(obj).attr("data-comment")!=undefined?$(obj).attr("data-comment"):"";
+            
+            if(self.showImages != "all" && i >= self.showImages){
+                $(obj).remove();
+            }
+            
         });
         this.loadGallery();
     },
@@ -123,11 +130,12 @@ xGallery.prototype = {
     build:function(){
         var self = this;
                
-        // Full
-        var navigation = "<div class='prev_btn'></div>";
-        navigation += "<div class='next_btn'></div>";
-        if(this.showImages != "all"){
-            $(this.obj).append("<div class='page-navigation'>"+navigation+"</div>");  
+        // Thumbnails
+        
+        var html = "<div class='prev_btn'></div>";
+        html += "<div class='next_btn'></div>";
+        if(this.showPageImages != "all"){
+            $(this.obj).append("<div class='page-navigation'>"+html+"</div>");  
             
             var pageNum = "";
             if(this.showPageNum){
@@ -150,9 +158,14 @@ xGallery.prototype = {
             }
         }
         
-        navigation += "<div class='close_btn'></div>";
+        // Full
+        if(this.showImageNum){
+           html += "<div class='nummber'>"+(this.activImage+1)+"/"+this.imageNum+"</div>";
+        }
         
-        $(this.obj).append("<div class='surface'>"+navigation+"</div>");
+        html += "<div class='close_btn'></div>";
+        
+        $(this.obj).append("<div class='surface'>"+html+"</div>");
         $(this.obj).find(".surface").append("<div class='border'></div>");
         $(this.obj).find(".surface").append("<div class='loader'></div>");
         
@@ -246,11 +259,11 @@ xGallery.prototype = {
 			});	
 		}
         
-        if(this.showImages == "all"){
+        if(this.showPageImages == "all"){
             $(this.imagesThumb).fadeIn(500);
         }else{
             $(this.imagesThumb).hide();
-            $(this.imagesThumb).slice(0,this.showImages).show();
+            $(this.imagesThumb).slice(0,this.showPageImages).show();
         }
     },
     
@@ -258,11 +271,13 @@ xGallery.prototype = {
         var self = this;
         if(i>=0 && i<this.imageNum){
             this.activImage = i;
+            this.setStatus();
         }
         if(this.openAnimationStatus){
             this.openAnimationStatus = false;
             this.setSize();
             $(this.imgContainer).css("opacity",0);
+            $("body").css("overflow","hidden");
             $(this.obj).find(".surface").fadeIn(500,function(){
                 self.addImage(function(){
 					self.addComment();
@@ -282,6 +297,7 @@ xGallery.prototype = {
             this.openAnimationStatus = false;
             $(self.imgContainer).animate({opacity:1},200,function(){
                 $(self.obj).find(".surface").fadeOut(500,function(){
+                    $("body").css("overflow","auto");
                     self.openAnimationStatus = true;  
                 }); 
             });
@@ -316,6 +332,7 @@ xGallery.prototype = {
                this.activImage=0;
             }
             this.animation(function(){
+                self.setStatus();
                 self.animationStatus = true;   
             });
         }
@@ -331,6 +348,7 @@ xGallery.prototype = {
                this.activImage=this.imageNum-1;
             }
             this.animation(function(){
+                self.setStatus();
                 self.animationStatus = true;   
             });
         }
@@ -344,6 +362,7 @@ xGallery.prototype = {
             }
             this.animation(function(){
                 self.animationStatus = true;
+                self.setStatus();
                 if(fx){fx();}  
             });
         }
@@ -376,13 +395,14 @@ xGallery.prototype = {
         var self=this;
         if(this.pageStatus){
             this.pageStatus= false;
-            if(this.showImages*self.imagepage < this.imageNum){
+            if(this.showPageImages*self.imagepage < this.imageNum){
                 this.imagepage ++;
             }else{
                 this.imagepage = 1;  
             }
             this.gotoPage(this.imagepage,function(){
-                self.pageStatus=true;    
+                self.setStatus();
+                self.pageStatus=true; 
             })
         }
     },
@@ -394,10 +414,11 @@ xGallery.prototype = {
             if(this.imagepage > 1){
                 this.imagepage --;
             }else{
-                this.imagepage = Math.ceil(this.imageNum / this.showImages);  
+                this.imagepage = Math.ceil(this.imageNum / this.showPageImages);  
             }
             this.gotoPage(this.imagepage,function(){
-                self.pageStatus=true;    
+                self.setStatus();
+                self.pageStatus=true;      
             })
         }
     },
@@ -408,9 +429,10 @@ xGallery.prototype = {
             this.imagepage = i;
             $(".page-num .num").html(this.imagepage);
             $(this.imagesThumb).hide();
-            $(self.imagesThumb).slice((self.showImages*self.imagepage)-self.showImages,self.showImages*self.imagepage).show();
+            $(self.imagesThumb).slice((self.showPageImages*self.imagepage)-self.showPageImages,self.showPageImages*self.imagepage).show();
             $(self.points).removeClass("activ").eq(this.imagepage-1).addClass("activ"); 
             if(fx){fx();}
+            self.setStatus();
         }
     },
     
@@ -441,6 +463,12 @@ xGallery.prototype = {
             $(img).width("");
             $(img).height(this.height-this.border);
         }
+    },
+    
+    setStatus:function(){
+        if(this.showImageNum){
+           $(this.obj).find(".surface .nummber").html((this.activImage+1)+"/"+this.imageNum);
+        }   
     },
     
     // Console

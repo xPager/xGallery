@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.0.9 - 10.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.0 - 25.06.2014
 #####################################################################################################################*/
 
 .xpager-gallery{
@@ -179,6 +179,15 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
 	position: fixed;
 	color: #fff;
 	bottom: 5px;
+    left:0px;
 	width: 100%;
 	text-align: center;
+}
+
+.xpager-gallery .surface .nummber{
+    position: fixed;
+	color: #fff;
+	bottom: 10px;
+    right:10px;
+	text-align: center;  
 }
