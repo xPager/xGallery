@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.0 - 25.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.2 - 25.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -449,16 +449,16 @@ xGallery.prototype = {
     
     setSize:function(){
 		var self = this;
-		var innerContent = $(this.obj).find(".surface .inner-content");
 		this.width = $(window).width();
         this.height = $(window).height();
         $(this.obj).find(".surface .border").css({"width":this.width-this.border,"height":this.height-this.border});
 	},
     
     setImageSize:function(){
-        var img = this.imgArray[this.activImage]["img"];
+        var img = $(this.obj).find(".surface .border img");
         $(img).height("");
         $(img).width(this.width-this.border);
+        console.log(img);
         if((this.height-this.border) < $(img).height()){
             $(img).width("");
             $(img).height(this.height-this.border);
