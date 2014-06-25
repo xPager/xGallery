@@ -17,8 +17,26 @@ HTML
 
 Script
 ----
-
 ``` js
 $("#gallery").xGallery();
 ```
+Settings
+----
+``` js
+$("#gallery").xGallery({
+	animationType:"fade",
+	animationSpeed:300,
+	touchControl:true,
+	keyControl:true,
+	showPageNum:true		// Page Nummbers
+	showPagePoints:true,	// Show Points Nav
+	showPageImages:"all",	// all or Num images of Page
+	showImages:"all",		// all or Num images show
+	showComments:false,		// Show Imagecomments
+	showImageNum:true,		// Show Imagenummber
+	border:110,
+	beta:true
+});
+```
+
 [xPager]:http://xpager.ch
