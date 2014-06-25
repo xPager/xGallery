@@ -458,7 +458,6 @@ xGallery.prototype = {
         var img = $(this.obj).find(".surface .border img");
         $(img).height("");
         $(img).width(this.width-this.border);
-        console.log(img);
         if((this.height-this.border) < $(img).height()){
             $(img).width("");
             $(img).height(this.height-this.border);
