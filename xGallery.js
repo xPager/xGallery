@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.2 - 25.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.3 - 26.06.2014
 #####################################################################################################################*/
 
 (function($){
@@ -50,7 +50,8 @@ var xGallery = function(options,fx){
 		showPageImages:"all",       // all or Num images of Page
         showImages:"all",           // all or Num images show
 		showComments:false,         // Show Imagecomments
-        showImageNum:true,         // Show Imagenummber
+        showImageNum:true,          // Show Imagenummber
+        hiddenScrollbar:true,       // Hidden Body Scrollbar
         border:110,
         beta:true
     },options);
@@ -277,7 +278,7 @@ xGallery.prototype = {
             this.openAnimationStatus = false;
             this.setSize();
             $(this.imgContainer).css("opacity",0);
-            $("body").css("overflow","hidden");
+            if(this.hiddenScrollbar){$("body").css("overflow","hidden");}
             $(this.obj).find(".surface").fadeIn(500,function(){
                 self.addImage(function(){
 					self.addComment();
@@ -297,7 +298,7 @@ xGallery.prototype = {
             this.openAnimationStatus = false;
             $(self.imgContainer).animate({opacity:1},200,function(){
                 $(self.obj).find(".surface").fadeOut(500,function(){
-                    $("body").css("overflow","auto");
+                    if(self.hiddenScrollbar){$("body").css("overflow","auto");}
                     self.openAnimationStatus = true;  
                 }); 
             });
