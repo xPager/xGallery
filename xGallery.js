@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.3 - 26.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.3 - 04.07.2014
 #####################################################################################################################*/
 
 (function($){
@@ -50,8 +50,7 @@ var xGallery = function(options,fx){
 		showPageImages:"all",       // all or Num images of Page
         showImages:"all",           // all or Num images show
 		showComments:false,         // Show Imagecomments
-        showImageNum:true,          // Show Imagenummber
-        hiddenScrollbar:true,       // Hidden Body Scrollbar
+        showImageNum:true,         // Show Imagenummber
         border:110,
         beta:true
     },options);
@@ -278,7 +277,7 @@ xGallery.prototype = {
             this.openAnimationStatus = false;
             this.setSize();
             $(this.imgContainer).css("opacity",0);
-            if(this.hiddenScrollbar){$("body").css("overflow","hidden");}
+            $("body").css("overflow","hidden");
             $(this.obj).find(".surface").fadeIn(500,function(){
                 self.addImage(function(){
 					self.addComment();
@@ -298,7 +297,7 @@ xGallery.prototype = {
             this.openAnimationStatus = false;
             $(self.imgContainer).animate({opacity:1},200,function(){
                 $(self.obj).find(".surface").fadeOut(500,function(){
-                    if(self.hiddenScrollbar){$("body").css("overflow","auto");}
+                    $("body").css("overflow","auto");
                     self.openAnimationStatus = true;  
                 }); 
             });
@@ -372,16 +371,18 @@ xGallery.prototype = {
     addImage:function(fx){
         var self = this;
         $(this.loader).fadeIn(200);
-        this.imgArray[this.activImage]["img"].src = this.imgArray[this.activImage]["src"];
+
         this.imageLoader(this.imgArray[this.activImage]["img"],function(){
             $(self.loader).fadeOut(200);
             $(self.obj).find(".surface .border img").remove();
-            $(self.obj).find(".surface .border").append("<img class='image' src='"+self.imgArray[self.activImage]["img"].src+"' alt='' />");
+            $(self.obj).find(".surface .border").append(self.imgArray[self.activImage]["img"]);
             self.setImageSize();
             if(fx){fx();}
         },function(){
             //console.log("img not load");
         });
+        
+        this.imgArray[this.activImage]["img"].src = this.imgArray[this.activImage]["src"];
     },
 	
 	addComment:function(){
@@ -439,7 +440,7 @@ xGallery.prototype = {
     
     imageLoader:function(img,fx,fxErr){
 		if(img.complete||img.readyState===4){
-			img.src+="?d="+new Date().getTime();
+            img.src+="?d="+new Date().getTime();
 			$(img).load(function(response,status,xhr){
                 if(fx){fx();}}).error(function(){if(fxErr){fxErr();}
             });
@@ -456,11 +457,11 @@ xGallery.prototype = {
 	},
     
     setImageSize:function(){
-        var img = $(this.obj).find(".surface .border img");
-        $(img).height("");
+        var img = this.imgArray[this.activImage]["img"];
+        $(img).height("auto");
         $(img).width(this.width-this.border);
         if((this.height-this.border) < $(img).height()){
-            $(img).width("");
+            $(img).width("auto");
             $(img).height(this.height-this.border);
         }
     },
