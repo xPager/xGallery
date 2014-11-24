@@ -31,6 +31,10 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     position:relative;   
 }
 
+.xpager-gallery div img{
+	cursor:pointer;
+}
+
 .xpager-gallery .page-navigation{
     display:inline-block;
 }
