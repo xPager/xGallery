@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.3 - 04.07.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.3 - 09.02.2015
 #####################################################################################################################*/
 
 (function($){
@@ -50,7 +50,8 @@ var xGallery = function(options,fx){
 		showPageImages:"all",       // all or Num images of Page
         showImages:"all",           // all or Num images show
 		showComments:false,         // Show Imagecomments
-        showImageNum:true,         // Show Imagenummber
+        showImageNum:true,          // Show Imagenummber
+        buttonObj:false,            // Show Buttom to Open Gallery
         border:110,
         beta:true
     },options);
@@ -103,7 +104,8 @@ xGallery.prototype = {
             self.imgArray[i]["thumb"] = obj;
 			self.imgArray[i]["comment"] = $(obj).attr("data-comment")!=undefined?$(obj).attr("data-comment"):"";
             
-            if(self.showImages != "all" && i >= self.showImages){
+            if(self.showImages != "all" && i >= self.showImages || self.buttonObj){
+                $(obj).parent("div").remove();
                 $(obj).remove();
             }
             
@@ -187,6 +189,9 @@ xGallery.prototype = {
             self.setImageSize();  
         });
 		
+        $(this.buttonObj).click(function(){
+            self.openGallery(0);
+        });
 	
         $(this.imagesThumb).click(function(){
             self.openGallery($(this).parent().index());
@@ -371,18 +376,16 @@ xGallery.prototype = {
     addImage:function(fx){
         var self = this;
         $(this.loader).fadeIn(200);
-
+        this.imgArray[this.activImage]["img"].src = this.imgArray[this.activImage]["src"];
         this.imageLoader(this.imgArray[this.activImage]["img"],function(){
             $(self.loader).fadeOut(200);
             $(self.obj).find(".surface .border img").remove();
-            $(self.obj).find(".surface .border").append(self.imgArray[self.activImage]["img"]);
+            $(self.obj).find(".surface .border").append("<img class='image' src='"+self.imgArray[self.activImage]["img"].src+"' alt='' />");
             self.setImageSize();
             if(fx){fx();}
         },function(){
             //console.log("img not load");
         });
-        
-        this.imgArray[this.activImage]["img"].src = this.imgArray[this.activImage]["src"];
     },
 	
 	addComment:function(){
@@ -440,7 +443,7 @@ xGallery.prototype = {
     
     imageLoader:function(img,fx,fxErr){
 		if(img.complete||img.readyState===4){
-            img.src+="?d="+new Date().getTime();
+			img.src+="?d="+new Date().getTime();
 			$(img).load(function(response,status,xhr){
                 if(fx){fx();}}).error(function(){if(fxErr){fxErr();}
             });
@@ -457,11 +460,11 @@ xGallery.prototype = {
 	},
     
     setImageSize:function(){
-        var img = this.imgArray[this.activImage]["img"];
-        $(img).height("auto");
+        var img = $(this.obj).find(".surface .border img");
+        $(img).height("");
         $(img).width(this.width-this.border);
         if((this.height-this.border) < $(img).height()){
-            $(img).width("auto");
+            $(img).width("");
             $(img).height(this.height-this.border);
         }
     },
