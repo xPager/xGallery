@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.3 - 09.02.2015
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.5 - 13.05.2015
 #####################################################################################################################*/
 
 (function($){
@@ -52,6 +52,7 @@ var xGallery = function(options,fx){
 		showComments:false,         // Show Imagecomments
         showImageNum:true,          // Show Imagenummber
         buttonObj:false,            // Show Buttom to Open Gallery
+        title:false,                // Gallery Title
         border:110,
         beta:true
     },options);
@@ -166,6 +167,11 @@ xGallery.prototype = {
         }
         
         html += "<div class='close_btn'></div>";
+        
+        // Div fuer titel der galerie
+        if(this.title){
+           html += "<div class='gallery-title'>"+this.title+"</div>"; 
+        }
         
         $(this.obj).append("<div class='surface'>"+html+"</div>");
         $(this.obj).find(".surface").append("<div class='border'></div>");
@@ -463,7 +469,7 @@ xGallery.prototype = {
         var img = $(this.obj).find(".surface .border img");
         $(img).height("");
         $(img).width(this.width-this.border);
-        if((this.height-this.border) < $(img).height()){
+        if((this.height-this.border) < $(img).height() || $(img).height() == 0){
             $(img).width("");
             $(img).height(this.height-this.border);
         }
