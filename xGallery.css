@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.2 - 30.03.2015
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.0 - 25.06.2014
 #####################################################################################################################*/
 
 .xpager-gallery{
@@ -138,7 +138,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
 }
 
 .xpager-gallery .surface .border img{
-    position:fixed;
+    position:absolute;
     top: 0;
     bottom: 0;
     left: 0;
@@ -155,7 +155,6 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     display:inline-block;
     position:absolute;
     top:50%;
-    left: 0px;
     height:60px;
     width:50px;
     margin-top:-25px;
@@ -163,11 +162,12 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     line-height:50px;
     cursor:pointer;
     z-index:10;
+    background-image:url(img/nav_prev.png);
 }
 
 .xpager-gallery .surface .next_btn{
-    left: auto;
     right:0px;
+    background-image:url(img/nav_next.png);
 }
 
 .xpager-gallery .surface .close_btn{
