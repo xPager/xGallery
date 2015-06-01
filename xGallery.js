@@ -175,7 +175,7 @@ xGallery.prototype = {
         
         $(this.obj).append("<div class='surface'>"+html+"</div>");
         $(this.obj).find(".surface").append("<div class='border'></div>");
-        $(this.obj).find(".surface").append("<div class='loader'></div>");
+        $(this.obj).find(".surface").append("<div class='loader'><i class='fa fa-spinner fa-pulse'></i></div>");
         
         this.imagesThumb = $(this.obj).find("img");
         this.imgContainer = $(this.obj).find(".surface .border");

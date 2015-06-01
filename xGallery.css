@@ -121,8 +121,10 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     margin: auto;
     height:50px;
     width:50px;
-    background-image:url(img/loader.gif);
     background-size:cover;
+    font-size: 35px;
+    text-align: center;
+    line-height: 50px;
 }
 
 .xpager-gallery .surface .border{
