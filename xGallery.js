@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.5 - 13.05.2015
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.7 - 01.06.2015
 #####################################################################################################################*/
 
 (function($){
@@ -191,8 +191,7 @@ xGallery.prototype = {
         var self = this;
         
         $(window).resize(function(){
-            self.setSize();
-            self.setImageSize();  
+            self.setSize(); 
         });
 		
         $(this.buttonObj).click(function(){
@@ -383,11 +382,11 @@ xGallery.prototype = {
         var self = this;
         $(this.loader).fadeIn(200);
         this.imgArray[this.activImage]["img"].src = this.imgArray[this.activImage]["src"];
-        this.imageLoader(this.imgArray[this.activImage]["img"],function(){
+        this.imageLoader(this.imgArray[this.activImage]["img"],function(img){
             $(self.loader).fadeOut(200);
             $(self.obj).find(".surface .border img").remove();
-            $(self.obj).find(".surface .border").append("<img class='image' src='"+self.imgArray[self.activImage]["img"].src+"' alt='' />");
-            self.setImageSize();
+            $(self.obj).find(".surface .border").append(img);
+            $(self.obj).find(".surface .border img").addClass("image");
             if(fx){fx();}
         },function(){
             //console.log("img not load");
@@ -451,10 +450,10 @@ xGallery.prototype = {
 		if(img.complete||img.readyState===4){
 			img.src+="?d="+new Date().getTime();
 			$(img).load(function(response,status,xhr){
-                if(fx){fx();}}).error(function(){if(fxErr){fxErr();}
+                if(fx){fx(img);}}).error(function(){if(fxErr){fxErr(img);}
             });
 		}else{
-			if(fx){fx();}
+			if(fx){fx(img);}
 		}
 	},
     
@@ -464,16 +463,6 @@ xGallery.prototype = {
         this.height = $(window).height();
         $(this.obj).find(".surface .border").css({"width":this.width-this.border,"height":this.height-this.border});
 	},
-    
-    setImageSize:function(){
-        var img = $(this.obj).find(".surface .border img");
-        $(img).height("");
-        $(img).width(this.width-this.border);
-        if((this.height-this.border) < $(img).height() || $(img).height() == 0){
-            $(img).width("");
-            $(img).height(this.height-this.border);
-        }
-    },
     
     setStatus:function(){
         if(this.showImageNum){

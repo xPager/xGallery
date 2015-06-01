@@ -24,7 +24,7 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
                                                            ggg::::::ggg                                            
                                                               gggggg
 															  
-© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.0 - 25.06.2014
+© xPager - xGallery - Manuel Kleinert - www.xpager.ch - info(at)xpager.ch - v 1.1.1 - 01.06.2015
 #####################################################################################################################*/
 
 .xpager-gallery{
@@ -52,14 +52,6 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     text-align:center;
     line-height:32px;
 }
-
-.xpager-gallery .next_btn:before{
-    content:">>";
-}
-
-.xpager-gallery .prev_btn:before{
-    content:"<<";
-} 
 
 .xpager-gallery .page-num{
     display:inline-block;
@@ -145,13 +137,14 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     right: 0;
     margin: auto;
     cursor:default;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
 }
 
-.xpager-gallery .surface .next_btn:before, .xpager-gallery .surface .prev_btn:before{
-    content:""!important;
-} 
-
 .xpager-gallery .surface .next_btn, .xpager-gallery .surface .prev_btn{
+    font: normal normal normal 14px/1 FontAwesome;
     display:inline-block;
     position:absolute;
     top:50%;
@@ -162,13 +155,22 @@ xxxxxxx      xxxxxxxPPPPPPPPPP          aaaaaaaaaa  aaaa   gggggggg::::::g     e
     line-height:50px;
     cursor:pointer;
     z-index:10;
-    background-image:url(img/nav_prev.png);
+    font-size: 40px;
+    line-height: 60px;
 }
 
 .xpager-gallery .surface .next_btn{
     right:0px;
-    background-image:url(img/nav_next.png);
 }
+
+.xpager-gallery .surface .next_btn:before{
+    content:"\f105";
+}
+
+.xpager-gallery .surface .prev_btn:before{
+    content:"\f104";
+} 
+
 
 .xpager-gallery .surface .close_btn{
     color:#fff;
