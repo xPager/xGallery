@@ -106,7 +106,7 @@ xGallery.prototype = {
 			self.imgArray[i]["comment"] = $(obj).attr("data-comment")!=undefined?$(obj).attr("data-comment"):"";
             
             if(self.showImages != "all" && i >= self.showImages || self.buttonObj){
-                $(obj).parent("div").remove();
+                $(obj).parent("div").not(self.obj).remove();
                 $(obj).remove();
             }
             
